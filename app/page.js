@@ -5,91 +5,43 @@ import ChatLayout from "@/components/ChatLayout";
 import ChatMessages from "@/components/ChatMessages";
 import ChatOptionButtons from "@/components/ChatOptionButtons";
 import ChatInput from "@/components/ChatInput";
+import { FLOW } from "./chatBotFlow";
 
-// Q1 – Business options
-const BUSINESS_OPTIONS = [
-  "🔧 Pump",
-  "❄️ Air Conditioning",
-  "🚿 Water Heater",
-  "🪑 Furniture",
-  "📄 Corrugated Paper",
-  "📦 Corrugated Boxes",
-  "🟫 Wooden Pallets",
-  "🧴 Plastic Jerry Cans",
-  "🚗 Car",
-  "🌞 Solar Panel",
+const HERO_FEATURES = [
+  "Multi-branch concierge flow that qualifies pump, service, and spare requests in one place.",
+  "Lead context packaged for CRM with brand, usage, and site data so teams can act instantly.",
+  // "Micro-interactions tuned for enterprise UX patterns, motion safety, and accessibility.",
 ];
 
-// Q2 – Pump support type
-const PUMP_SUPPORT_OPTIONS = [
-  "🆕 New Pump Enquiry",
-  "🛠️ Service Related Job",
-  "🔩 Spare Parts Enquiry",
-  "⚙️ Customized Pump Solution",
+const METRIC_CARDS = [
+  // { label: "", value: "42s", helper: "live concierge" },
+  { label: "Completion rate", value: "98%", helper: "guided steps" },
+  { label: "Availability", value: "24/7", helper: "GCC coverage" },
 ];
 
-// New Pump Enquiry → pump types
-const PUMP_TYPE_OPTIONS = [
-  "🚰 Submersible Pump",
-  "🚰 Borewell Pump",
-  "🚰 Centrifugal Pump",
-  "🚰 Vertical Multistage Pump",
-  "🚰 Horizontal End Suction Pump",
-  "🚰 Dozing Pump",
-  "🚰 Circulation Pump",
-  "🚰 High Pressure Pump",
-  "🚰 Other",
-];
-
-// Usage type
-const USAGE_OPTIONS = [
-  "🏠 Residential Building Services",
-  "🏢 Commercial Building Services",
-  "🏭 Industry",
-  "💡 Utility",
-];
-
-// Installation vs supply
-const SUPPLY_OPTIONS = ["🛠️ Installation", "🧰 Only Supply"];
-
-// Yes / No
-const YES_NO_OPTIONS = ["✅ Yes", "❌ No"];
-
-// Service Related Job → service type
-const SERVICE_TYPE_OPTIONS = [
-  "🛠️ Installation",
-  "🧰 Repair",
-  "📅 Annual Maintenance",
-  "🚨 Emergency Breakdown",
-  "📍 Site Visit",
-];
-
-// Spare Parts Enquiry → spare type
-const SPARE_PART_OPTIONS = [
-  "⚙️ Mechanical Seal",
-  "⚙️ Impeller",
-  "⚙️ Others",
+const SUPPORT_PILLARS = [
+  {
+    title: "Pump projects",
+    detail: "Spec-driven questionnaires for new installs, retrofits, or bespoke solutions.",
+  },
+  {
+    title: "Service & maintenance",
+    detail: "Emergency flows escalate with location capture and instant engineer alerts.",
+  },
+  {
+    title: "Spare part desk",
+    detail: "Exact part, alternates, and urgency logged before it hits the service queue.",
+  },
 ];
 
 export default function Page() {
   const [messages, setMessages] = useState([
-    {
-      from: "bot",
-      text: "Welcome to MAHY KHOORY 👋",
-    },
-    {
-      from: "bot",
-      text: "Hello! 😀 Please choose the business you need help with -",
-    },
+    // { from: "bot", text: "Welcome to the Mahy Khoory intelligent desk." },
+    { from: "bot", text: FLOW.q1_business.text },
   ]);
-
-const [stage, setStage] = useState("q1_business");
-
-
-  const [isTyping, setIsTyping] = useState(false);
-
-  // Store all answers
+  const [current, setCurrent] = useState("q1_business");
   const [answers, setAnswers] = useState({});
+  const [isTyping, setIsTyping] = useState(false);
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
 
   function addBot(text) {
@@ -100,380 +52,172 @@ const [stage, setStage] = useState("q1_business");
     setMessages((prev) => [...prev, { from: "user", text }]);
   }
 
-  // Helper: save answer
-  function saveAnswer(key, value) {
-    setAnswers((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+  function saveAnswer(field, value) {
+    if (!field) return;
+    setAnswers((prev) => ({ ...prev, [field]: value }));
   }
 
-  // ---- MAIN OPTION HANDLER (for button questions) ----
+  async function submitToCRM(payload) {
+    console.log("Submitting to CRM", payload);
+  }
+
   function handleOptionSelect(option) {
+    const question = FLOW[current];
+    if (!question) return;
+
     addUser(option);
+    const clean = option.replace(/^[^\w]+ /, "").trim();
+    const updatedAnswers = question.field
+      ? { ...answers, [question.field]: clean }
+      : { ...answers };
 
-    // Strip emoji and space if you want a clean value
-    const clean = option.replace(/^[^\w]+ /, "");
+    saveAnswer(question.field, clean);
 
-    switch (stage) {
-      case "q1_business": {
-        saveAnswer("business", clean);
-
-        const isPump = clean.toLowerCase().includes("pump");
-        if (isPump) {
-          // Pump flow
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("What kind of support are you seeking today? 🤝");
-            setStage("q2_pump_support");
-          }, 500);
-        } else {
-          // Non-pump flow → we can keep simple: ask location + contact details
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("Please share the site location 📍");
-            setStage("q_site_location");
-          }, 500);
-        }
-        break;
-      }
-
-      case "q2_pump_support": {
-        saveAnswer("pumpSupportType", clean);
-
-        if (clean === "New Pump Enquiry") {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("What type of pump are you looking for?");
-            setStage("q3_pump_type");
-          }, 500);
-        } else if (clean === "Service Related Job") {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("Which type of Service do you need?");
-            setStage("q3_service_type");
-          }, 500);
-        } else if (clean === "Spare Parts Enquiry") {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("Which spare part do you need?");
-            setStage("q3_spare_part");
-          }, 500);
-        } else if (clean === "Customized Pump Solution") {
-          setIsTyping(true);
-          setTimeout(() => {
-            setIsTyping(false);
-            addBot("Please mention 📝");
-            setStage("q_custom_solution_desc");
-          }, 500);
-        }
-        break;
-      }
-
-      case "q3_pump_type": {
-        saveAnswer("pumpType", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Is this for residential, commercial, or industrial use?");
-          setStage("q4_usage");
-        }, 500);
-        break;
-      }
-
-      case "q4_usage": {
-        saveAnswer("usageType", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Do you need installation or just supply?");
-          setStage("q5_supply");
-        }, 500);
-        break;
-      }
-
-      case "q5_supply": {
-        saveAnswer("supplyType", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Do you prefer a specific brand?");
-          setStage("q6_brand_pref");
-        }, 500);
-        break;
-      }
-
-      case "q6_brand_pref": {
-        saveAnswer("brandPreference", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          if (clean === "Yes") {
-            addBot("Please mention your preferred brand 📝");
-            setStage("q7_brand_name");
-          } else {
-            addBot("Please share the site location 📍");
-            setStage("q_site_location");
-          }
-        }, 500);
-        break;
-      }
-
-      case "q3_service_type": {
-        saveAnswer("serviceType", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Please share the site location 📍");
-          setStage("q_site_location");
-        }, 500);
-        break;
-      }
-
-      case "q3_spare_part": {
-        saveAnswer("sparePart", clean);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          if (clean === "Others") {
-            addBot("Please mention 📝");
-            setStage("q_spare_other_desc");
-          } else {
-            addBot("May I know your name? 😀");
-            setStage("q_name");
-          }
-        }, 500);
-        break;
-      }
-
-      default:
-        break;
-    }
+    const nextNode = question.options?.find((o) => o.label === option)?.next;
+    progress(nextNode, updatedAnswers);
   }
 
-  // ---- TEXT ANSWERS (for brand name, "Please mention", name, email, phone, location) ----
   function handleTextSubmit(text) {
+    const question = FLOW[current];
+    if (!question) return;
+
     addUser(text);
+    const payload = question.field ? { ...answers, [question.field]: text } : { ...answers };
+    saveAnswer(question.field, text);
 
-    switch (stage) {
-      case "q7_brand_name": {
-        saveAnswer("brandName", text);
+    if (question.submit) {
+      addBot("Submitting your details...");
+      setIsTyping(true);
 
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Please share the site location 📍");
-          setStage("q_site_location");
-        }, 500);
-        break;
-      }
+      setTimeout(async () => {
+        await submitToCRM(payload);
+        setIsTyping(false);
+        addBot("Your enquiry has been submitted successfully. Our specialists will be in touch shortly.");
+        setCurrent("done");
+      }, 900);
 
-      case "q_custom_solution_desc": {
-        saveAnswer("customSolutionDetails", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("May I know your name? 😀");
-          setStage("q_name");
-        }, 500);
-        break;
-      }
-
-      case "q_spare_other_desc": {
-        saveAnswer("spareOtherDetails", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("May I know your name? 😀");
-          setStage("q_name");
-        }, 500);
-        break;
-      }
-
-      case "q_site_location": {
-        saveAnswer("siteLocation", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("May I know your name? 😀");
-          setStage("q_name");
-        }, 500);
-        break;
-      }
-
-      case "q_name": {
-        saveAnswer("name", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot(
-            "Can I have your email address to share details with you? 📨"
-          );
-          setStage("q_email");
-        }, 500);
-        break;
-      }
-
-      case "q_email": {
-        saveAnswer("email", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot(
-            "Please share your mobile number so our team can assist you instantly. 📞"
-          );
-          setStage("q_phone");
-        }, 500);
-        break;
-      }
-
-      case "q_phone": {
-        saveAnswer("phone", text);
-
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-          addBot("Thank you 🙏. Submitting your details now...");
-          // TODO: call backend /api/lead with `answers` here
-          console.log("Final answers payload:", {
-            ...answers,
-            phone: text,
-          });
-          addBot("✔ Your enquiry has been submitted successfully.");
-          setStage("done");
-        }, 500);
-        break;
-      }
-
-      default:
-        break;
+      return;
     }
+
+    progress(question.next, payload);
   }
 
-  // ---- Determine what to render at bottom (options or text field) ----
-  let optionsToShow = null;
-  let isTextStage = false;
-  let textPlaceholder = "Enter your answer";
+  function progress(nextKey, contextAnswers = answers) {
+    if (!nextKey || !FLOW[nextKey]) {
+      setCurrent("done");
+      return;
+    }
 
-  if (stage === "q1_business") {
-    optionsToShow = BUSINESS_OPTIONS;
-  } else if (stage === "q2_pump_support") {
-    optionsToShow = PUMP_SUPPORT_OPTIONS;
-  } else if (stage === "q3_pump_type") {
-    optionsToShow = PUMP_TYPE_OPTIONS;
-  } else if (stage === "q4_usage") {
-    optionsToShow = USAGE_OPTIONS;
-  } else if (stage === "q5_supply") {
-    optionsToShow = SUPPLY_OPTIONS;
-  } else if (stage === "q6_brand_pref") {
-    optionsToShow = YES_NO_OPTIONS;
-  } else if (stage === "q3_service_type") {
-    optionsToShow = SERVICE_TYPE_OPTIONS;
-  } else if (stage === "q3_spare_part") {
-    optionsToShow = SPARE_PART_OPTIONS;
-  } else if (
-    [
-      "q7_brand_name",
-      "q_custom_solution_desc",
-      "q_spare_other_desc",
-      "q_site_location",
-      "q_name",
-      "q_email",
-      "q_phone",
-    ].includes(stage)
-  ) {
-    isTextStage = true;
-    if (stage === "q7_brand_name") textPlaceholder = "Enter brand name";
-    if (stage === "q_custom_solution_desc")
-      textPlaceholder = "Please mention your requirement 📝";
-    if (stage === "q_spare_other_desc")
-      textPlaceholder = "Please mention the spare part 📝";
-    if (stage === "q_site_location")
-      textPlaceholder = "Enter site location 📍";
-    if (stage === "q_name") textPlaceholder = "Enter your name 😀";
-    if (stage === "q_email") textPlaceholder = "Enter your email 📨";
-    if (stage === "q_phone") textPlaceholder = "Enter your mobile number 📞";
+    setIsTyping(true);
+    setTimeout(async () => {
+      const nextQuestion = FLOW[nextKey];
+      addBot(nextQuestion.text);
+
+      if (nextQuestion.submit && nextQuestion.type === "info") {
+        await submitToCRM(contextAnswers);
+        setIsTyping(false);
+        setCurrent("done");
+        return;
+      }
+
+      setIsTyping(false);
+      setCurrent(nextKey);
+    }, 650);
   }
 
-  const canInteract = stage !== "done";
+  const question = FLOW[current];
+  const options = question?.type === "options" ? question.options.map((o) => o.label) : null;
+  const isTextStage = question && ["text", "email", "phone"].includes(question.type);
+  const canInteract = current !== "done" && !isTyping;
+  const prompt = current !== "done" ? question?.text : null;
+
+  function getPlaceholder() {
+    if (!question) return "Type your response";
+    if (question.field === "acName") return "Enter your answer";
+    if (question.field === "acEmail") return "Please enter an email";
+    if (question.field === "acPhone") return "Enter your answer";
+    if (question.type === "email") return "name@company.com";
+    if (question.type === "phone") return "+971 55 123 4567";
+    if (question.field === "siteLocation") return "Share the site location";
+    if (question.field === "brandName") return "Mention the preferred brand";
+    return "Type your response";
+  }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -top-32 right-[-5%] h-96 w-96 rounded-full bg-indigo-500/40 blur-[140px]" />
-        <div className="absolute bottom-0 left-[-10%] h-[28rem] w-[28rem] rounded-full bg-blue-600/30 blur-[160px]" />
-      </div>
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16 lg:flex-row lg:items-start lg:justify-between lg:py-20">
+        <section className="max-w-2xl space-y-8">
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            Mahy Khoory Concierge desk
+          </span>
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-16 lg:flex-row lg:items-center lg:justify-between">
-        <section className="max-w-2xl space-y-6">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
-            Mahy Khoory Intelligent Desk
-          </p>
-          <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl">
-            Enquiry for the Services.
-          </h1>
-          <p className="text-base text-white/80 sm:text-lg">
-            Launch the enquiry concierge to start a guided conversation, route
-            to the right team, and capture end-to-end project context without
-            leaving the page.
-          </p>
-          <ul className="space-y-3 text-white/80">
-            <li className="flex items-center gap-3 text-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              Industry grade CRM workflow built for pump, service, and spare part
-              needs.
-            </li>
-            <li className="flex items-center gap-3 text-sm">
-              <span className="h-2 w-2 rounded-full bg-sky-400" />
-              Clean lead handover with brand, usage, and site data all in one
-              payload.
-            </li>
-            <li className="flex items-center gap-3 text-sm">
-              <span className="h-2 w-2 rounded-full bg-indigo-400" />
-              Fully responsive floating widget ready to drop into any page.
-            </li>
-          </ul>
-        </section>
-
-        <section className="grid gap-6 rounded-3xl border border-white/15 bg-white/5 p-8 text-white/80 backdrop-blur-xl">
-          <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-              Response Time
-            </p>
-            <p className="mt-2 text-4xl font-semibold text-white">~ 2 mins</p>
-            <p className="mt-1 text-sm text-white/70">
-              Mahy Khoory CRM chatbot
+          <div className="space-y-5">
+            <h1 className="text-4xl font-semibold leading-snug text-slate-900 sm:text-5xl">
+              We are innovation. We are technology.
+            </h1>
+            <p className="text-base text-slate-600 sm:text-lg">
+              We at the M.A.H.Y. Khoory Group welcome you. Having begun as a handful of dedicated individuals, we have grown into the massive conglomerate that we are today, with a workforce of over 3100+ employees, and a name that is recognized across the Middle East as leaders in the fields of Water Pumping Solutions, Electrical Solutions, Paper Recycling, and Logistics. We have partnerships with various reputable companies like Grundfos, Eaton, Lister Petter, Kirloskar Chillers.
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-              <p className="text-xs text-white/60">Live enquiries</p>
-              <p className="mt-1 text-2xl font-semibold text-white">--</p>
-              <p className="text-xs text-white/60">Across 5 business units</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
-              <p className="text-xs text-white/60">Conversion uplift</p>
-              <p className="mt-1 text-2xl font-semibold text-white">+42%</p>
-              <p className="text-xs text-white/60">vs. static forms</p>
-            </div>
+
+          {/* <ul className="space-y-4 text-slate-600">
+            {HERO_FEATURES.map((feature) => (
+              <li key={feature} className="flex items-start gap-3 text-sm">
+                <span className="mt-1 h-2 w-2 rounded-full bg-blue-500/70" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul> */}
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setIsWidgetOpen(true)}
+              className="inline-flex items-center gap-3 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30"
+            >
+              Launch assistant
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="h-4 w-4"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </section>
+
+        {/* <section className="w-full rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-lg shadow-slate-900/5"> */}
+          {/* <div className="grid gap-4 sm:grid-cols-3">
+            {METRIC_CARDS.map((metric) => (
+              <div
+                key={metric.label}
+                className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-5 text-center"
+              >
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{metric.label}</p>
+                <p className="mt-2 text-3xl font-semibold text-slate-900">{metric.value}</p>
+                <p className="text-xs text-slate-500">{metric.helper}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {SUPPORT_PILLARS.map((pillar) => (
+              <article
+                key={pillar.title}
+                className="rounded-2xl border border-slate-100 bg-slate-50/80 px-5 py-4 text-sm text-slate-600"
+              >
+                <p className="text-sm font-semibold text-slate-900">{pillar.title}</p>
+                <p className="mt-1 text-sm leading-relaxed">{pillar.detail}</p>
+              </article>
+            ))}
+          </div> */}
+        {/* </section> */}
       </div>
 
       {!isWidgetOpen && (
@@ -481,15 +225,13 @@ const [stage, setStage] = useState("q1_business");
           type="button"
           onClick={() => setIsWidgetOpen(true)}
           aria-expanded={isWidgetOpen}
-          className="fixed bottom-6 right-6 z-30 flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-left text-white shadow-2xl shadow-blue-900/40 backdrop-blur transition hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+          className="fixed bottom-6 right-6 z-30 flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-left text-slate-900 shadow-xl shadow-slate-900/10 transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
         >
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-white/70">
-              Enquiry Concierge
-            </p>
-            <p className="text-lg font-semibold text-white">Chat with us</p>
+            <p className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Concierge</p>
+            <p className="text-lg font-semibold text-slate-900">Chat with us</p>
           </div>
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-indigo-500/40">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-inner shadow-slate-600/30">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -507,39 +249,55 @@ const [stage, setStage] = useState("q1_business");
       {isWidgetOpen && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm"
             aria-hidden="true"
             onClick={() => setIsWidgetOpen(false)}
           />
-          <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-6 sm:justify-end sm:px-8 sm:pb-8">
-            <div className="pointer-events-auto w-full max-w-md sm:max-w-lg">
-              <ChatLayout
-                onClose={() => setIsWidgetOpen(false)}
-                className="h-[80vh] w-full sm:h-[640px]"
-              >
+          <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-6 sm:justify-end sm:px-10 sm:pb-10">
+            <div className="pointer-events-auto w-full max-w-2xl sm:max-w-xl">
+              <ChatLayout onClose={() => setIsWidgetOpen(false)} className="h-[80vh] w-full sm:h-[640px]">
                 <ChatMessages messages={messages} isTyping={isTyping} />
 
-                <footer className="border-t border-slate-100/70 bg-white/80 px-5 pb-5 pt-4 backdrop-blur">
-                  {canInteract && optionsToShow && (
+                <footer className="space-y-3 border-t border-slate-100 bg-slate-50 px-5 pb-5 pt-4">
+                  {prompt && (
+                    <p className="text-sm font-semibold text-slate-600">{prompt}</p>
+                  )}
+
+                  {canInteract && options && (
                     <ChatOptionButtons
-                      options={optionsToShow}
+                      className="custom-scrollbar max-h-60 overflow-y-auto pr-1"
+                      options={options}
                       onSelect={handleOptionSelect}
                     />
                   )}
 
                   {canInteract && isTextStage && (
-                    <div className="mt-3">
-                      <ChatInput
-                        placeholder={textPlaceholder}
-                        onSubmit={handleTextSubmit}
-                      />
-                    </div>
+                    <ChatInput
+                      placeholder={getPlaceholder()}
+                      onSubmit={handleTextSubmit}
+                      disabled={!canInteract}
+                    />
                   )}
 
                   {!canInteract && (
-                    <p className="text-center text-xs text-slate-500">
-                      Conversation completed. Reopen the widget to start again.
-                    </p>
+                    <div className="flex flex-col items-center gap-2 text-center text-xs text-slate-500">
+                      <p>Conversation completed. Reopen the widget to start again.</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMessages([
+                            // { from: "bot", text: "Welcome to the Mahy Khoory intelligent desk." },
+                            { from: "bot", text: FLOW.q1_business.text },
+                          ]);
+                          setAnswers({});
+                          setCurrent("q1_business");
+                          setIsTyping(false);
+                        }}
+                        className="text-[11px] font-semibold uppercase tracking-[0.3em] text-blue-500"
+                      >
+                        Restart flow
+                      </button>
+                    </div>
                   )}
                 </footer>
               </ChatLayout>

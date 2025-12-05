@@ -1,16 +1,15 @@
-export default function ChatOptionButtons({ options, onSelect }) {
-  if (!options) return null;
+export default function ChatOptionButtons({ options, onSelect, className = "" }) {
+  if (!options?.length) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={`space-y-2 ${className}`}>
       {options.map((option) => (
         <button
           key={option}
           type="button"
           onClick={() => onSelect(option)}
-          className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs font-medium text-slate-600 shadow-sm shadow-slate-900/5 transition hover:-translate-y-0.5 hover:border-blue-400 hover:text-blue-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-200"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-slate-300 transition group-hover:bg-blue-500" />
           {option}
         </button>
       ))}

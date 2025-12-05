@@ -1,43 +1,50 @@
 import { useState } from "react";
 
-export default function ChatInput({ placeholder, onSubmit }) {
+export default function ChatInput({ placeholder, onSubmit, disabled = false }) {
   const [value, setValue] = useState("");
+
+  const trimmed = value.trim();
+  const canSend = trimmed.length > 0 && !disabled;
 
   function handleSubmit(event) {
     event.preventDefault();
-    const nextValue = value.trim();
-    if (!nextValue) return;
-    onSubmit(nextValue);
+    if (!canSend) return;
+    onSubmit(trimmed);
     setValue("");
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 px-3 py-2 shadow-sm shadow-slate-900/5 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100"
+      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-sm shadow-slate-900/5 focus-within:border-slate-400 focus-within:ring-1 focus-within:ring-slate-200"
     >
       <input
-        className="flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
+        className="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none disabled:text-slate-400"
         placeholder={placeholder}
         value={value}
+        disabled={disabled}
         onChange={(event) => setValue(event.target.value)}
       />
 
       <button
         type="submit"
         aria-label="Send message"
-        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.03] active:scale-95"
+        disabled={!canSend}
+        className={`inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
+          canSend ? "" : "opacity-40 hover:translate-y-0"
+        }`}
       >
+        <span className="hidden sm:inline">Send</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
-          className="h-5 w-5"
+          className="h-4 w-4"
         >
-          <path d="M22 2L11 13" />
-          <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+          <path d="M22 2 11 13" />
+          <path d="m22 2-7 20-4-9-9-4 20-7z" />
         </svg>
       </button>
     </form>
