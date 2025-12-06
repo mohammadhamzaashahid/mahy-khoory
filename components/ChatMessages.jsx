@@ -1,7 +1,18 @@
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 
-export default function ChatMessages({ messages, isTyping }) {
+function ChatMessages({ messages, isTyping }, ref) {
   const chatRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    scrollToTop() {
+      if (!chatRef.current) return;
+      chatRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    scrollToBottom() {
+      if (!chatRef.current) return;
+      chatRef.current.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" });
+    },
+  }));
 
   useEffect(() => {
     if (!chatRef.current) return;
@@ -72,3 +83,5 @@ export default function ChatMessages({ messages, isTyping }) {
     </section>
   );
 }
+
+export default forwardRef(ChatMessages);

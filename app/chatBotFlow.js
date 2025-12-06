@@ -707,7 +707,7 @@ export const FLOW = {
             { label: "🛠️ Installation", next: "q_name" },
             { label: "🧰 Repair", next: "q_name" },
             { label: "📅 Annual Maintenance", next: "q_name" },
-            { label: "🚨 Emergency Breakdown", next: "q_emergency_submit" },
+            { label: "🚨 Emergency Breakdown", next: "q_emergency_info" },
             { label: "📍 Site Visit", next: "q_site_location" },
         ],
     },
@@ -719,8 +719,32 @@ export const FLOW = {
         next: "q_name",
     },
 
+    q_emergency_info: {
+        text: "📞 Emergency Contact Number\n🚨 +971 4 6067300",
+        type: "info",
+        options: [
+            { label: "Back", next: "q3_service_type" },
+            { label: "Next", next: "q_emergency_final" },
+        ],
+    },
+
+    q_emergency_final: {
+        text: "📞 Please contact us for any enquiry.\n800-6249",
+        type: "info",
+        options: [
+            { label: "Back", next: "q_emergency_info" },
+            { label: "Submit", next: "q_emergency_submit" },
+        ],
+    },
+
+    // q_emergency_submit: {
+    //     text: "🚨 Emergency breakdown logged — our team will reach you shortly.",
+    //     type: "info",
+    //     submit: true,
+    // },
+
     q_emergency_submit: {
-        text: "🚨 Emergency breakdown logged — our team will reach you shortly.",
+        text: "🚨 Emergency Breakdown",
         type: "info",
         submit: true,
     },
@@ -770,9 +794,25 @@ export const FLOW = {
         type: "options",
         field: "location",
         options: [
-            { label: "UAE", next: "q_email" },
-            { label: "GCC", next: "q_email" },
-            { label: "Foreign", next: "q_email" },
+            { label: "UAE", next: "q_uae_area" },  // 🔥 UAE now branches differently
+            { label: "GCC", next: "q_email" },     // directly to email
+            { label: "Foreign", next: "q_email" }, // directly to email
+        ],
+    },
+
+    q_uae_area: {
+        text: "May I know which area you are based in, in the UAE?",
+        type: "options",
+        field: "uaeArea",
+        options: [
+            { label: "Abu Dhabi", next: "q_email" },
+            { label: "Dubai", next: "q_email" },
+            { label: "Sharjah", next: "q_email" },
+            { label: "Ajman", next: "q_email" },
+            { label: "Umm Al Quwain", next: "q_email" },
+            { label: "Ras Al Khaimah", next: "q_email" },
+            { label: "Fujairah", next: "q_email" },
+            { label: "Al Ain", next: "q_email" },
         ],
     },
 
@@ -789,4 +829,5 @@ export const FLOW = {
         field: "phone",
         submit: true,
     },
+
 };

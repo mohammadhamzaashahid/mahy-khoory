@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ChatLayout from "@/components/ChatLayout";
 import ChatMessages from "@/components/ChatMessages";
 import ChatOptionButtons from "@/components/ChatOptionButtons";
@@ -43,6 +43,7 @@ export default function Page() {
   const [answers, setAnswers] = useState({});
   const [isTyping, setIsTyping] = useState(false);
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+  const messagesRef = useRef(null);
 
   function addBot(text) {
     setMessages((prev) => [...prev, { from: "bot", text }]);
@@ -54,12 +55,37 @@ export default function Page() {
 
   function saveAnswer(field, value) {
     if (!field) return;
-    setAnswers((prev) => ({ ...prev, [field]: value }));
+
+    const questionText = FLOW[current]?.text || "";
+
+    setAnswers((prev) => ({
+      ...prev,
+      [field]: value,
+      _qmap: [
+        ...(prev._qmap || []),
+        {
+          question: questionText,
+          answer: value,
+        }
+      ]
+    }));
   }
 
-  async function submitToCRM(payload) {
-    console.log("Submitting to CRM", payload);
+ async function submitToCRM(payload) {
+  try {
+    await fetch("http://localhost:5000/api/crm/lead/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        answers, 
+        conversation: messages
+      }),
+    });
+  } catch (err) {
+    console.error("CRM submit error:", err);
   }
+}
+
 
   function handleOptionSelect(option) {
     const question = FLOW[current];
@@ -193,7 +219,7 @@ export default function Page() {
         </section>
 
         {/* <section className="w-full rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-lg shadow-slate-900/5"> */}
-          {/* <div className="grid gap-4 sm:grid-cols-3">
+        {/* <div className="grid gap-4 sm:grid-cols-3">
             {METRIC_CARDS.map((metric) => (
               <div
                 key={metric.label}
@@ -253,10 +279,11 @@ export default function Page() {
             aria-hidden="true"
             onClick={() => setIsWidgetOpen(false)}
           />
+
           <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-6 sm:justify-end sm:px-10 sm:pb-10">
             <div className="pointer-events-auto w-full max-w-2xl sm:max-w-xl">
               <ChatLayout onClose={() => setIsWidgetOpen(false)} className="h-[80vh] w-full sm:h-[640px]">
-                <ChatMessages messages={messages} isTyping={isTyping} />
+                <ChatMessages ref={messagesRef} messages={messages} isTyping={isTyping} />
 
                 <footer className="space-y-3 border-t border-slate-100 bg-slate-50 px-5 pb-5 pt-4">
                   {prompt && (
@@ -280,23 +307,33 @@ export default function Page() {
                   )}
 
                   {!canInteract && (
-                    <div className="flex flex-col items-center gap-2 text-center text-xs text-slate-500">
+                    <div className="flex flex-col items-center gap-3 text-center text-xs text-slate-500">
                       <p>Conversation completed. Reopen the widget to start again.</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMessages([
-                            // { from: "bot", text: "Welcome to the Mahy Khoory intelligent desk." },
-                            { from: "bot", text: FLOW.q1_business.text },
-                          ]);
-                          setAnswers({});
-                          setCurrent("q1_business");
-                          setIsTyping(false);
-                        }}
-                        className="text-[11px] font-semibold uppercase tracking-[0.3em] text-blue-500"
-                      >
-                        Restart flow
-                      </button>
+                      <div className="flex flex-wrap justify-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => messagesRef.current?.scrollToTop?.()}
+                          className="rounded-full border border-slate-200 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-700"
+                        >
+                          View answers
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMessages([
+                              // { from: "bot", text: "Welcome to the Mahy Khoory intelligent desk." },
+                              { from: "bot", text: FLOW.q1_business.text },
+                            ]);
+                            setAnswers({});
+                            setCurrent("q1_business");
+                            setIsTyping(false);
+                            messagesRef.current?.scrollToBottom?.();
+                          }}
+                          className="rounded-full border border-slate-200 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-blue-500"
+                        >
+                          Enquire More?
+                        </button>
+                      </div>
                     </div>
                   )}
                 </footer>
