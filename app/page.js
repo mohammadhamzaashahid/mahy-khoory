@@ -6,6 +6,9 @@ import ChatMessages from "@/components/ChatMessages";
 import ChatOptionButtons from "@/components/ChatOptionButtons";
 import ChatInput from "@/components/ChatInput";
 import { FLOW } from "./chatBotFlow";
+import Link from "next/link";
+import { FiBarChart2 } from "react-icons/fi";
+
 
 const HERO_FEATURES = [
   "Multi-branch concierge flow that qualifies pump, service, and spare requests in one place.",
@@ -71,20 +74,20 @@ export default function Page() {
     }));
   }
 
- async function submitToCRM(payload) {
-  try {
-    await fetch("http://localhost:5000/api/crm/lead/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        answers, 
-        conversation: messages
-      }),
-    });
-  } catch (err) {
-    console.error("CRM submit error:", err);
+  async function submitToCRM(payload) {
+    try {
+      await fetch("https://mahy-backend.vercel.app/api/crm/lead/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          answers,
+          conversation: messages
+        }),
+      });
+    } catch (err) {
+      console.error("CRM submit error:", err);
+    }
   }
-}
 
 
   function handleOptionSelect(option) {
@@ -342,6 +345,15 @@ export default function Page() {
           </div>
         </>
       )}
+      <Link
+        href="/pbi-dashboard"
+        className="fixed bottom-6 left-6 z-30 flex items-center gap-2 rounded-full bg-blue-600 text-white px-5 py-3 shadow-xl transition hover:-translate-y-0.5"
+      >
+        <FiBarChart2 size={18} />
+        Power BI Reports
+      </Link>
+
     </main>
+
   );
 }
