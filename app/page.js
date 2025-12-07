@@ -218,7 +218,17 @@ export default function Page() {
                 <path d="m12 5 7 7-7 7" />
               </svg>
             </button>
+
+            <Link
+              href="/pbi-dashboard"
+              className="fixed bottom-6 left-6 z-30 flex items-center gap-2 rounded-full bg-blue-600 text-white px-5 py-3 shadow-xl transition hover:-translate-y-0.5"
+            >
+              <FiBarChart2 size={18} />
+              Power BI Reports
+            </Link>
           </div>
+
+
         </section>
 
         {/* <section className="w-full rounded-3xl border border-slate-200 bg-white px-6 py-8 shadow-lg shadow-slate-900/5"> */}
@@ -345,13 +355,7 @@ export default function Page() {
           </div>
         </>
       )}
-      <Link
-        href="/pbi-dashboard"
-        className="fixed bottom-6 left-6 z-30 flex items-center gap-2 rounded-full bg-blue-600 text-white px-5 py-3 shadow-xl transition hover:-translate-y-0.5"
-      >
-        <FiBarChart2 size={18} />
-        Power BI Reports
-      </Link>
+
 
     </main>
 

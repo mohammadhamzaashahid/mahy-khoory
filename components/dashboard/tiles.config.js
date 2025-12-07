@@ -1,0 +1,268 @@
+export const TILE_CONFIG = [
+    // --- Finance Top Band ---
+    {
+        id: "cash-flow",
+        label: "Cash Flow",
+        icon: "/dashboard-icons/cash-flow.png",
+        category: "Finance",
+        reportUrl: "https://app.powerbi.com/reportEmbed?reportId=fec84d00-7af1-49b1-8852-c956823f379c&autoAuth=true&ctid=2898c5cb-a11c-4f00-8f42-60a9047336f1",
+    },
+    {
+        id: "profit-loss",
+        label: "Profit & Loss",
+        icon: "/dashboard-icons/accounting.png",
+        category: "Finance",
+        reportUrl: "https://app.powerbi.com/reportEmbed?reportId=fec84d00-7af1-49b1-8852-c956823f379c&autoAuth=true&ctid=2898c5cb-a11c-4f00-8f42-60a9047336f1",
+    },
+    {
+        id: "salary-summary",
+        label: "Salary Summary",
+        icon: "/dashboard-icons/salary.png",
+        category: "Finance",
+        reportUrl: "https://app.powerbi.com/reportEmbed?reportId=fec84d00-7af1-49b1-8852-c956823f379c&autoAuth=true&ctid=2898c5cb-a11c-4f00-8f42-60a9047336f1",
+    },
+    {
+        id: "bank-balance",
+        label: "Bank Balance",
+        icon: "/dashboard-icons/bank.png",
+        category: "Finance",
+        reportUrl: null,
+    },
+    {
+        id: "trial-balance",
+        label: "Trial Balance",
+        icon: "/dashboard-icons/book.png",
+        category: "Finance",
+        reportUrl: null,
+    },
+
+    // --- Sales / AR Performance ---
+    {
+        id: "sales-cost-centerwise",
+        label: "Sales by Cost Center",
+        icon: "/dashboard-icons/sales.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "sales-vs-target",
+        label: "Sales vs Target",
+        icon: "/dashboard-icons/medium.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "sales-vs-collection",
+        label: "Sales vs Collection",
+        icon: "/dashboard-icons/tips.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "sales-brandwise",
+        label: "Sales Brandwise",
+        icon: "/dashboard-icons/brand.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "delivered-not-invoiced",
+        label: "Delivered not Invoiced",
+        icon: "/dashboard-icons/delivered.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+
+    // --- Receivables / Aging ---
+    {
+        id: "invoice-receivables",
+        label: "Receivables Summary",
+        icon: "/dashboard-icons/money.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    {
+        id: "collection",
+        label: "Collection",
+        icon: "/dashboard-icons/tips.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    {
+        id: "delayed-collection",
+        label: "Overdue Collection",
+        icon: "/dashboard-icons/expired.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    {
+        id: "customer-balance",
+        label: "Customer Balance",
+        icon: "/dashboard-icons/risk.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    {
+        id: "customer-aging",
+        label: "Customer Aging",
+        icon: "/dashboard-icons/age.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+
+    // --- Sales Loss / Credit ---
+    {
+        id: "orders-at-loss",
+        label: "Orders at Loss",
+        icon: "/dashboard-icons/burn-money.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "credit-per-sales-unit",
+        label: "Credit per Sales Unit",
+        icon: "/dashboard-icons/credit-score.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "pdc-analysis",
+        label: "PDC Analysis",
+        icon: "/dashboard-icons/check.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    {
+        id: "customer-overdue",
+        label: "Customer Overdue",
+        icon: "/dashboard-icons/cheque.png",
+        category: "Receivables",
+        reportUrl: null,
+    },
+    // {
+    //     id: "bank-balance",
+    //     label: "Bank Balance",
+    //     icon: "/dashboard-icons/bank.png",
+    //     category: "Finance",
+    //     reportUrl: null,
+    // },
+
+    {
+        id: "expenses",
+        label: "Expenses",
+        icon: "/dashboard-icons/bill.png",
+        category: "Finance",
+        reportUrl: null,
+    },
+
+    // --- Purchasing Operations ---
+    {
+        id: "stock-purchase",
+        label: "Stock Purchase",
+        icon: "/dashboard-icons/inventory.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "non-stock-purchase",
+        label: "Non Stock Purchase",
+        icon: "/dashboard-icons/groceries.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "production",
+        label: "Production",
+        icon: "/dashboard-icons/factory.png",
+        category: "Operations",
+        reportUrl: null,
+    },
+    {
+        id: "return-orders",
+        label: "Return Orders",
+        icon: "/dashboard-icons/warehouse.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "payables-summary",
+        label: "Payables Summary",
+        icon: "/dashboard-icons/card-payment.png",
+        category: "Finance",
+        reportUrl: null,
+    },
+
+    // --- Vendor & Item Analytics ---
+    {
+        id: "vendor-item-analysis",
+        label: "Vendor/Item Analysis",
+        icon: "/dashboard-icons/cashier(1).png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "item-vendor-analysis",
+        label: "Item/Vendor Analysis",
+        icon: "/dashboard-icons/shopping-cart(1).png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "vendor-aging",
+        label: "Vendor Aging",
+        icon: "/dashboard-icons/age-limit.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "vendor-overdue",
+        label: "Vendor Overdue",
+        icon: "/dashboard-icons/wait-time.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+    {
+        id: "vendor-analysis",
+        label: "Vendor Analysis",
+        icon: "/dashboard-icons/analysis.png",
+        category: "Procurement",
+        reportUrl: null,
+    },
+
+    // --- Operational + Functional Areas ---
+    {
+        id: "maintenance",
+        label: "Maintenance",
+        icon: "/dashboard-icons/mechanic.png",
+        category: "Operations",
+        reportUrl: null,
+    },
+    {
+        id: "fixed-assets",
+        label: "Fixed Assets",
+        icon: "/dashboard-icons/tangible-assets.png",
+        category: "Finance",
+        reportUrl: null,
+    },
+    {
+        id: "opportunities",
+        label: "Opportunities",
+        icon: "/dashboard-icons/dashboard.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "quotations",
+        label: "Quotations",
+        icon: "/dashboard-icons/handshake.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+    {
+        id: "follow-ups",
+        label: "Follow Ups",
+        icon: "/dashboard-icons/customer-service.png",
+        category: "Sales",
+        reportUrl: null,
+    },
+];
