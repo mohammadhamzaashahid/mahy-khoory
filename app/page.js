@@ -77,18 +77,18 @@ export default function Page() {
   }
 
   async function submitToCRM(payload) {
-    try {
-      await fetch("https://mahy-backend.vercel.app/api/crm/lead/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          answers,
-          conversation: messages
-        }),
-      });
-    } catch (err) {
-      console.error("CRM submit error:", err);
-    }
+    // try {
+    //   await fetch("https://mahy-backend.vercel.app/api/crm/lead/create", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({
+    //       answers,
+    //       conversation: messages
+    //     }),
+    //   });
+    // } catch (err) {
+    //   console.error("CRM submit error:", err);
+    // }
   }
 
 
