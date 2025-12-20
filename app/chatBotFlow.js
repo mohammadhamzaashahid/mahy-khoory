@@ -3,20 +3,21 @@ export const FLOW = {
     // GLOBAL START
     // -------------------------------------------------
     q1_business: {
-        text: "WELCOME TO MAHY KHOORY 👋\n\nHello! Please choose the business you need help with 👇",
+        text: "Hello! ☺️ Please choose the business you need help with -",
         type: "options",
         field: "business",
         options: [
             { label: "🔧 Pump", next: "q2_pump_support" },
-            { label: "❄️ Air Conditioning", next: "ac_usage" },
+            { label: "⚙️ VFD", next: "lead_name" },
+            { label: "🛢️ Pressure Vessel", next: "lead_name" },
             { label: "🚿 Water Heater", next: "wh_usage" },
+            { label: "🔩 Valves", next: "lead_name" },
+            { label: "❄️ Air Conditioning", next: "ac_usage" },
+            { label: "🌬️ Odour Controller & Air Purification", next: "lead_name" },
+            { label: "🧰 Tools", next: "lead_name" },
+            { label: "🕳️ Manhole Covers", next: "lead_name" },
+            { label: "🦺 Safety Products", next: "lead_name" },
             { label: "🪑 Furniture", next: "fur_type" },
-            { label: "📄 Corrugated Paper", next: "cp_gsm" },
-            { label: "📦 Corrugated Boxes", next: "cb_wall_type" },
-            { label: "🟫 Wooden Pallets", next: "wp_type" },
-            { label: "🧴 Plastic Jerry Cans", next: "pjc_size" },
-            { label: "🚗 Car", next: "car_budget" },
-            { label: "🌞 Solar Panel", next: "sp_usage" },
         ],
     },
 
@@ -625,11 +626,60 @@ export const FLOW = {
         type: "options",
         field: "pumpSupportType",
         options: [
-            { label: "🆕 New Pump Enquiry", next: "q3_pump_type" },
+            { label: "🆕 New Pump Enquiry", next: "q3_business_type" },
             { label: "🛠️ Service Related Job", next: "q3_service_type" },
-            { label: "🔩 Spare Parts Enquiry", next: "q3_spare_part" },
-            { label: "⚙️ Customized Pump Solution", next: "q_custom_solution_desc" },
+            { label: "♻️ Retrofitting Job", next: "q_name" },
+            { label: "🔩 Spare Parts Enquiry", next: "q3_spare_equipment" },
+            { label: "⚙️ Customized Pump Solution", next: "q3_custom_solution_type" },
         ],
+    },
+
+    q3_custom_solution_type: {
+        text: "Which type of pump solution do you require?",
+        type: "options",
+        field: "customPumpSolutionType",
+        options: [
+            { label: "Boosting System", next: "q4_usage" },
+            { label: "Transfer System", next: "q4_usage" },
+            { label: "Irrigation System", next: "q4_usage" },
+            { label: "Circulation System", next: "q4_usage" },
+            { label: "Process Pumping System", next: "q4_usage" },
+            { label: "Drainage & Dewatering System", next: "q4_usage" },
+            { label: "Others", next: "q3_custom_solution_other_desc" },
+        ],
+    },
+
+
+    q3_custom_solution_other_desc: {
+        text: "Please mention 📝",
+        type: "text",
+        field: "customSolutionOtherDetails",
+        next: "q_name",
+    },
+
+
+    q3_business_type: {
+        text: "What is the primary line of business?",
+        type: "options",
+        field: "primaryBusinessType",
+        options: [
+            { label: "General Contractor", next: "q4_usage" },
+            { label: "MEP Contractor", next: "q4_usage" },
+            { label: "Consultant (Engineering / Project / Business)", next: "q4_usage" },
+            { label: "Trading Company / Distributor", next: "q_name" }, // 🔥 DIRECT
+            { label: "End User / Client", next: "q4_usage" },
+            { label: "Service Provider", next: "q4_usage" },
+            { label: "Other", next: "q3_other_business_desc" },
+        ],
+    },
+
+
+
+    q3_other_business_desc: {
+        text: "Please mention 📝",
+        type: "text",
+        field: "otherBusinessType",
+        next: "q_name",
     },
 
     // --------- NEW Pump Enquiry Path ---------
@@ -666,19 +716,21 @@ export const FLOW = {
             { label: "🏠 Residential Building Services", next: "q5_supply" },
             { label: "🏢 Commercial Building Services", next: "q5_supply" },
             { label: "🏭 Industry", next: "q5_supply" },
-            { label: "💡 Utility", next: "q5_supply" },
+            { label: "💧 Irrigation Pumps", next: "q5_supply" },
         ],
     },
+
 
     q5_supply: {
         text: "Do you need installation or just supply?",
         type: "options",
         field: "supplyType",
         options: [
-            { label: "🛠️ Installation", next: "q6_brand_pref" },
-            { label: "🧰 Only Supply", next: "q6_brand_pref" },
+            { label: "🛠️ Installation", next: "q_name" },
+            { label: "🧰 Only Supply", next: "q_name" },
         ],
     },
+
 
     q6_brand_pref: {
         text: "Do you prefer a specific brand?",
@@ -707,10 +759,17 @@ export const FLOW = {
             { label: "🛠️ Installation", next: "q_name" },
             { label: "🧰 Repair", next: "q_name" },
             { label: "📅 Annual Maintenance", next: "q_name" },
-            { label: "🚨 Emergency Breakdown", next: "q_emergency_info" },
+            { label: "🚨 Emergency Breakdown", next: "q_emergency_contact" },
             { label: "📍 Site Visit", next: "q_site_location" },
         ],
     },
+
+    q_emergency_contact: {
+        text: "📞 Emergency Contact Number\n🚨 +971 4 6067300",
+        type: "info",
+        submit: true,
+    },
+
 
     q_site_location: {
         text: "Please share the site location 📍",
@@ -751,16 +810,25 @@ export const FLOW = {
 
     // --------- SPARE PART PATH ---------
 
-    q3_spare_part: {
-        text: "Which spare part do you need?",
+    q3_spare_equipment: {
+        text: "Which equipment do you require spare parts for?",
         type: "options",
-        field: "sparePart",
+        field: "sparePartsEquipment",
         options: [
-            { label: "⚙️ Mechanical Seal", next: "q_name" },
-            { label: "⚙️ Impeller", next: "q_name" },
-            { label: "⚙️ Others", next: "q_spare_other_desc" },
+            { label: "💧 Water Pumps", next: "q_name" },
+            { label: "⚡ Generators", next: "q_name" },
+            { label: "📝 Others", next: "q3_spare_other_desc" },
         ],
     },
+
+    q3_spare_other_desc: {
+        text: "Please mention 📝",
+        type: "text",
+        field: "spareOtherEquipment",
+        next: "q_name",
+    },
+
+
 
     q_spare_other_desc: {
         text: "Please mention 📝",
@@ -794,11 +862,34 @@ export const FLOW = {
         type: "options",
         field: "location",
         options: [
-            { label: "UAE", next: "q_uae_area" },  // 🔥 UAE now branches differently
-            { label: "GCC", next: "q_email" },     // directly to email
-            { label: "Foreign", next: "q_email" }, // directly to email
+            { label: "UAE", next: "q_uae_area" },
+            { label: "GCC", next: "q_gcc_country" },
+            { label: "Others", next: "q_other_country" },
         ],
     },
+
+
+    q_other_country: {
+        text: "Please select your country",
+        type: "country",
+        field: "country",
+        next: "q_email",
+    },
+
+    q_gcc_country: {
+        text: "Please select your country",
+        type: "options",
+        field: "gccCountry",
+        options: [
+            { label: "Saudi Arabia", next: "q_email" },
+            { label: "Kuwait", next: "q_email" },
+            { label: "Qatar", next: "q_email" },
+            { label: "Bahrain", next: "q_email" },
+            { label: "Oman", next: "q_email" },
+        ],
+    },
+
+
 
     q_uae_area: {
         text: "May I know which area you are based in, in the UAE?",
@@ -815,6 +906,7 @@ export const FLOW = {
             { label: "Al Ain", next: "q_email" },
         ],
     },
+
 
     q_email: {
         text: "Can I have your email address to share details with you? 📨",

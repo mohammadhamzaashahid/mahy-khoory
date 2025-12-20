@@ -4,10 +4,12 @@ import { useRef, useState } from "react";
 import ChatLayout from "@/components/ChatLayout";
 import ChatMessages from "@/components/ChatMessages";
 import ChatOptionButtons from "@/components/ChatOptionButtons";
+import CountryDropdown from "@/components/CountryDropdown";
 import ChatInput from "@/components/ChatInput";
 import { FLOW } from "./chatBotFlow";
 import Link from "next/link";
 import { FiBarChart2 } from "react-icons/fi";
+import { COUNTRY_LIST } from "@/lib/countries";
 
 
 const HERO_FEATURES = [
@@ -131,6 +133,16 @@ export default function Page() {
     progress(question.next, payload);
   }
 
+  function handleCountrySelect(selectedCountry) {
+    const question = FLOW[current];
+    if (!question) return;
+
+    addUser(selectedCountry);
+    const payload = question.field ? { ...answers, [question.field]: selectedCountry } : { ...answers };
+    saveAnswer(question.field, selectedCountry);
+    progress(question.next, payload);
+  }
+
   function progress(nextKey, contextAnswers = answers) {
     if (!nextKey || !FLOW[nextKey]) {
       setCurrent("done");
@@ -157,6 +169,7 @@ export default function Page() {
   const question = FLOW[current];
   const options = question?.type === "options" ? question.options.map((o) => o.label) : null;
   const isTextStage = question && ["text", "email", "phone"].includes(question.type);
+  const isCountryStage = question?.type === "country";
   const canInteract = current !== "done" && !isTyping;
   const prompt = current !== "done" ? question?.text : null;
 
@@ -199,7 +212,7 @@ export default function Page() {
             ))}
           </ul> */}
 
-          <div className="flex flex-wrap gap-3">
+          {/* <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => setIsWidgetOpen(true)}
@@ -226,7 +239,7 @@ export default function Page() {
               <FiBarChart2 size={18} />
               Power BI Reports
             </Link>
-          </div>
+          </div> */}
 
 
         </section>
@@ -308,6 +321,14 @@ export default function Page() {
                       className="custom-scrollbar max-h-60 overflow-y-auto pr-1"
                       options={options}
                       onSelect={handleOptionSelect}
+                    />
+                  )}
+
+                  {canInteract && isCountryStage && (
+                    <CountryDropdown
+                      countries={COUNTRY_LIST}
+                      disabled={!canInteract}
+                      onSubmit={handleCountrySelect}
                     />
                   )}
 
