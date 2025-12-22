@@ -8,18 +8,44 @@ export const FLOW = {
         field: "business",
         options: [
             { label: "🔧 Pump", next: "q2_pump_support" },
-            { label: "⚙️ VFD", next: "lead_name" },
-            { label: "🛢️ Pressure Vessel", next: "lead_name" },
-            { label: "🚿 Water Heater", next: "wh_usage" },
-            { label: "🔩 Valves", next: "lead_name" },
+            { label: "⚙️ VFD", next: "q_name" },
+            { label: "🛢️ Pressure Vessel", next: "q_name" },
+            { label: "🚿 Water Heater", next: "wh_type_select" },
+            { label: "🔩 Valves", next: "q_name" },
             { label: "❄️ Air Conditioning", next: "ac_usage" },
-            { label: "🌬️ Odour Controller & Air Purification", next: "lead_name" },
-            { label: "🧰 Tools", next: "lead_name" },
-            { label: "🕳️ Manhole Covers", next: "lead_name" },
-            { label: "🦺 Safety Products", next: "lead_name" },
+            { label: "🌬️ Odour Controller & Air Purification", next: "q_name" },
+            { label: "🧰 Tools", next: "tools_category" },
+            { label: "🕳️ Manhole Covers", next: "q_name" },
+            { label: "🦺 Safety Products", next: "safety_product_select" },
             { label: "🪑 Furniture", next: "fur_type" },
         ],
     },
+
+    //safety product select
+
+    safety_product_select: {
+        text: "Please select the safety product",
+        type: "options",
+        field: "safetyProductType",
+        options: [
+            { label: "🥾 Safety Shoes", next: "q_name" },
+            { label: "📄 Sand Paper", next: "q_name" },
+            { label: "🪜 Aluminum Ladder", next: "q_name" },
+        ],
+    },
+
+    //tools category
+    tools_category: {
+        text: "Please select the product category",
+        type: "options",
+        field: "toolsCategory",
+        options: [
+            { label: "🛠️ Power Tools", next: "q_name" },
+            { label: "🔧 Accessories", next: "q_name" },
+        ],
+    },
+
+
 
     // -------------------------------------------------
     // SOLAR PANEL FLOW
@@ -83,6 +109,17 @@ export const FLOW = {
         type: "phone",
         field: "phone",
         submit: true,
+    },
+
+
+    wh_type_select: {
+        text: "Please select the type of water heater required",
+        type: "options",
+        field: "waterHeaterType",
+        options: [
+            { label: "☀️ Solar Water Heater", next: "q_name" },
+            { label: "⚡ Electric Water Heater", next: "q_name" },
+        ],
     },
 
 
@@ -374,21 +411,23 @@ export const FLOW = {
     // -------------------------------------------------
 
     fur_type: {
-        text: "Could you tell me the style or type of furniture you’re looking for?",
-        type: "text",
-        field: "furnitureType",
-        next: "fur_usage",
-    },
+    text: "Could you tell me the style or type of furniture you’re looking for?",
+    type: "text",
+    field: "furnitureType",
+    next: "fur_usage",
+},
 
-    fur_usage: {
-        text: "May I know if this is for your home or office space?",
-        type: "options",
-        field: "furnitureUsage",
-        options: [
-            { label: "Home", next: "fur_brand_pref" },
-            { label: "Office", next: "fur_brand_pref" },
-        ],
-    },
+
+ fur_usage: {
+    text: "May I know if this is for your home or office space?",
+    type: "options",
+    field: "furnitureUsage",
+    options: [
+        { label: "Home", next: "q_name" },
+        { label: "Office", next: "q_name" },
+    ],
+},
+
 
     fur_brand_pref: {
         text: "Do you prefer a specific brand?",
@@ -529,8 +568,9 @@ export const FLOW = {
         text: "What room size or area do you want to cool?",
         type: "text",
         field: "acRoomSize",
-        next: "ac_brand_pref",
+        next: "q_name",
     },
+
 
     ac_brand_pref: {
         text: "Do you prefer a specific brand?",
